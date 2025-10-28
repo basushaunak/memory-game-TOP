@@ -1,0 +1,85 @@
+.header {
+  max-width: fit-content;
+  margin-inline: auto;
+  padding-block: 0.25rem;
+  display: flex;
+  place-items: center;
+  gap: 2em;
+  /* border: 2px black solid; */
+  /* border-radius: 25px; */
+  user-select: none;
+}
+.app-title {
+  display: flex;
+  place-items: center;
+  gap: 1rem;
+  margin-inline: 1rem;
+  margin-block: 0;
+}
+
+.app-name {
+  margin-block: 0;
+  font-size: 4rem;
+  font-weight: bold;
+  background: linear-gradient(
+    60deg,
+    violet,
+    indigo,
+    blue,
+    green,
+    yellow,
+    orange,
+    red,
+    violet,
+    indigo,
+    blue,
+    green,
+    yellow,
+    orange,
+    red,
+    violet,
+    indigo,
+    blue,
+    green,
+    yellow,
+    orange,
+    red,
+    violet,
+    indigo,
+    blue,
+    green,
+    yellow,
+    orange,
+    red,
+    violet,
+    indigo,
+    blue,
+    green,
+    yellow,
+    orange,
+    red,
+    violet,
+    indigo,
+    blue,
+    green,
+    yellow,
+    orange,
+    red
+  );
+  -webkit-background-clip: text; /* For Webkit browsers (Chrome, Safari) */
+  background-clip: text; /* Standard property */
+  color: transparent;
+}
+
+.logo {
+  max-height: 4rem;
+}
+
+.message{
+  width: 30ch;
+  position: absolute;
+  right: 10px;
+  color: yellow;
+  font-size: 1.2rem;
+  /* display: none; */
+}

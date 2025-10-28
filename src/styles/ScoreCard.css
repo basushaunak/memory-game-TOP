@@ -1,0 +1,32 @@
+.score-card {
+  padding: 0px;
+  margin: 0px;
+  max-width: fit-content;
+  padding-inline: 0.5em;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  place-items: center;
+  font-size: 0.9rem;
+  line-height: 1rem;
+  margin-inline-start: auto;
+  margin-inline-end: 1rem;
+  font-weight: bold;
+  user-select: none;
+  gap: 0.5rem 0;
+}
+
+.score,
+.high-score {
+  margin:0;
+  justify-self: end;
+}
+
+.score {
+  color: yellow;
+}
+.high-score {
+  color: red;
+}
+.score-card-para{
+  margin: 0;
+}
