@@ -1,12 +1,12 @@
 .header {
   max-width: fit-content;
   margin-inline: auto;
-  padding: 1rem;
+  padding-block: 0.25rem;
   display: flex;
   place-items: center;
   gap: 2em;
-  border: 2px black solid;
-  border-radius: 25px;
+  /* border: 2px black solid; */
+  /* border-radius: 25px; */
   user-select: none;
 }
 .app-title {
@@ -73,4 +73,13 @@
 
 .logo {
   max-height: 4rem;
+}
+
+.message{
+  width: 30ch;
+  position: absolute;
+  right: 10px;
+  color: yellow;
+  font-size: 1.2rem;
+  /* display: none; */
 }
