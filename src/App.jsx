@@ -1,74 +1,84 @@
-// import { useState } from 'react'
 import "./App.css";
 import Header from "./components/Header.jsx";
 import Card from "./components/Card.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createDeck, shuffleDeck, isPair } from "./utils.js";
+
 const WRONGANSWER = -50;
-const RIGHTANSWER = 100;
+const RIGHTANSWER = 200;
 
 function App() {
   const [allCards, setAllCards] = useState(shuffleDeck(createDeck()));
   const [message, setMessage] = useState("Click a card to reveal");
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
-  // const [isOpen, setIsOpen] = useState(false);
-  // const [isCleared, setIsCleared] = useState(false);
-  let openCards = [];
-  function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-  async function handleCardClick(id) {
-    if (openCards.length >= 2) {
-      //already two cards are opened, you can't open another card!
-      if (!allCards.filter((card) => card.id === id).isOpen) {
-        setMessage("Two cards are open, you can't open a third card!");
-        return;
+  const [openCards, setOpenCards] = useState([]); // Use useState for interactive state
+
+  // Use useEffect to handle the logic when two cards are open
+  useEffect(() => {
+    if (allCards.filter((card) => !card.isCleared).length === 0) {
+      setMessage("Game Over!");
+      if (score > highScore) {
+        setHighScore(score);
       }
     }
-    if (allCards.filter((card) => card.id === id).isOpen) {
-      openCards = openCards.filter((card) => card.id !== id);
-    } else {
-      openCards.push(id);
+  }, [allCards, score, highScore]);
+  useEffect(() => {
+    if (openCards.length === 2) {
+      const [id1, id2] = openCards;
+      // const card1 = allCards.find((card) => card.id === id1);
+      // const card2 = allCards.find((card) => card.id === id2);
+
+      if (isPair(id1, id2)) {
+        // Correctly handle a matching pair
+        setScore((prevScore) => prevScore + RIGHTANSWER);
+        setMessage("It's a pair!");
+        setAllCards((prevDeck) =>
+          prevDeck.map((card) =>
+            card.id === id1 || card.id === id2
+              ? { ...card, isCleared: true, isOpen: true }
+              : card
+          )
+        );
+        setOpenCards([]); // Clear the openCards array
+      } else {
+        // Correctly handle a mismatch with a delay
+        setScore((prevScore) => prevScore + WRONGANSWER);
+        setMessage("No match, try again.");
+        setTimeout(() => {
+          setAllCards((prevDeck) =>
+            prevDeck.map((card) =>
+              card.id === id1 || card.id === id2
+                ? { ...card, isOpen: false }
+                : card
+            )
+          );
+          setOpenCards([]); // Clear the array after the delay
+        }, 1000); // 1-second delay
+      }
     }
+  }, [openCards, allCards, setAllCards, setScore, setMessage]);
+
+  function handleCardClick(id) {
+    const clickedCard = allCards.find((card) => card.id === id);
+
+    // Prevent clicks if:
+    // - The card is already cleared.
+    // - The card is already open.
+    // - Two cards are already open and the timer is running.
+    if (clickedCard.isCleared || clickedCard.isOpen || openCards.length >= 2) {
+      return;
+    }
+
+    // Toggle the card's open state
     setAllCards((prevDeck) =>
       prevDeck.map((card) =>
-        card.id === id
-          ? { ...card, isOpen: !card.isOpen } // toggle true/false
-          : card
+        card.id === id ? { ...card, isOpen: true } : card
       )
     );
 
-    if (openCards.length === 2) {
-      //Two cards have been opened, act on it to check if they are pair or not
-      //If they are add to score and mark isCleared to true for both cards.
-      //If they are not deduct marks
-      //close both cards and make the openCards array empty after two seconds (2000ms)
-      if (isPair(openCards[0], openCards[1])) {
-        await sleep(1000);
-        for (let i = 0; i < 2; i++) {
-          setAllCards((prevDeck) =>
-            prevDeck.map((card) =>
-              card.id === openCards[i].id ? { ...card, isCleared: true } : card
-            )
-          );
-        }
-        setScore((prevScore) => prevScore + RIGHTANSWER);
-        openCards = [];
-        return;
-      } else {
-        await sleep(2000);
-        setScore((prevScore) => prevScore + WRONGANSWER);
-        for (let i = 0; i < 2; i++) {
-          setAllCards((prevDeck) =>
-            prevDeck.map((card) =>
-              card.id === openCards[i].id ? { ...card, isOpened: false } : card
-            )
-          );
-        }
-        openCards = [];
-      }
-    }
+    // Update the openCards array using the functional update form
+    setOpenCards((prevOpen) => [...prevOpen, id]);
   }
 
   return (
@@ -88,9 +98,3 @@ function App() {
 }
 
 export default App;
-
-// {
-//   allCards.map(card => (
-//     <CardDisplay key={card.id} card={card} />
-//   ))
-// }

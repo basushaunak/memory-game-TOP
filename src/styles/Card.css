@@ -23,4 +23,5 @@
   0 0 30px 10px #e85151;  */
   box-shadow: 0 0 3px 2px hsl(0, 77%, 50%),
   0 0 5px 4px hsl(0, 77%, 80%); 
+  cursor: pointer;
 }
