@@ -12,25 +12,33 @@ function App() {
   const [message, setMessage] = useState("Click a card to reveal");
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
-  const [openCards, setOpenCards] = useState([]); // Use useState for interactive state
+  const [openCards, setOpenCards] = useState([]);
+  const [runCount, setRunCount] =useState(1);
 
-  // Use useEffect to handle the logic when two cards are open
+
   useEffect(() => {
     if (allCards.filter((card) => !card.isCleared).length === 0) {
       setMessage("Game Over!");
-      if (score > highScore) {
+      if (runCount===1) {
         setHighScore(score);
+      } else {
+        if (score > highScore) {
+          setHighScore(score);
+        }
+      }
+      if(window.confirm("Do you want to start a new game?")){
+        setScore(0);
+        setOpenCards([]);
+        setMessage("Clcik a card to reveal");
+        setAllCards(shuffleDeck(createDeck()));
+        setRunCount((oldCount)=>oldCount+1);
       }
     }
   }, [allCards, score, highScore]);
   useEffect(() => {
     if (openCards.length === 2) {
       const [id1, id2] = openCards;
-      // const card1 = allCards.find((card) => card.id === id1);
-      // const card2 = allCards.find((card) => card.id === id2);
-
       if (isPair(id1, id2)) {
-        // Correctly handle a matching pair
         setScore((prevScore) => prevScore + RIGHTANSWER);
         setMessage("It's a pair!");
         setAllCards((prevDeck) =>
@@ -40,9 +48,8 @@ function App() {
               : card
           )
         );
-        setOpenCards([]); // Clear the openCards array
+        setOpenCards([]);
       } else {
-        // Correctly handle a mismatch with a delay
         setScore((prevScore) => prevScore + WRONGANSWER);
         setMessage("No match, try again.");
         setTimeout(() => {
@@ -53,8 +60,8 @@ function App() {
                 : card
             )
           );
-          setOpenCards([]); // Clear the array after the delay
-        }, 1000); // 1-second delay
+          setOpenCards([]);
+        }, 1000);
       }
     }
   }, [openCards, allCards, setAllCards, setScore, setMessage]);
@@ -62,28 +69,23 @@ function App() {
   function handleCardClick(id) {
     const clickedCard = allCards.find((card) => card.id === id);
 
-    // Prevent clicks if:
-    // - The card is already cleared.
-    // - The card is already open.
-    // - Two cards are already open and the timer is running.
     if (clickedCard.isCleared || clickedCard.isOpen || openCards.length >= 2) {
       return;
     }
 
-    // Toggle the card's open state
     setAllCards((prevDeck) =>
       prevDeck.map((card) =>
         card.id === id ? { ...card, isOpen: true } : card
       )
     );
 
-    // Update the openCards array using the functional update form
+
     setOpenCards((prevOpen) => [...prevOpen, id]);
   }
 
   return (
     <>
-      <Header score={score} highScore={highScore} message={message} />
+      <Header score={score} highScore={highScore} runCount={runCount} message={message} />
       <div className="game">
         {allCards.map((card) => (
           <Card
