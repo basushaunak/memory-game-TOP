@@ -10,7 +10,7 @@ export default function Header({ score, highScore, runCount, message="" }) {
         <img src={logo} className="logo" />
         <h1 className="app-name">Memory Game</h1>
     </div>
-    <ScoreCard score={score} highScore={highScore runCount={runCount}} />
+    <ScoreCard score={score} highScore={highScore} runCount={runCount} />
     <div className="message">{message}</div>
   </div>
   );
